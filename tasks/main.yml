@@ -1,0 +1,46 @@
+---
+- name: Set internal facts
+  set_fact:
+    umeed_src: "{{ ansible_env.HOME }}/src/umeed"
+    umeed_home_dir: "{{ ansible_env.HOME }}/.umee"
+    current_user: "{{ ansible_env.USER }}"
+
+- name: Create "src" directory
+  ansible.builtin.file:
+    path: "{{ umeed_src }}"
+    state: directory
+
+- name: Install Umee node
+  include_tasks: install_node.yml
+
+- name: Get stats of the genesis file
+  ansible.builtin.stat:
+    path: "{{ umeed_home_dir }}/config/genesis.json"
+  register: genesis
+
+- name: Initialize Umee node
+  include_tasks: umee_init.yml
+  when: not genesis.stat.exists
+
+- name: Install Cosmovisor service manager
+  include_tasks: install_cosmovisor.yml
+
+- name: create service
+  template:
+    src: "umeed.service.j2"
+    dest: "/etc/systemd/system/umeed.service"
+  become: yes
+  become_user: root
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  become: yes
+  become_user: root
+
+- name: start service
+  service:
+    name: umeed
+    state: started
+    enabled: yes
+  become: yes
+  become_user: root

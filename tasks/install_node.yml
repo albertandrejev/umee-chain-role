@@ -1,0 +1,14 @@
+---
+- name: Umee git checkout
+  ansible.builtin.git:
+    repo: "{{ umeed_github_uri }}"
+    dest: "{{ umeed_src }}"
+    version: "{{ umeed_version }}"
+
+- name: Build umee daemon executable
+  make:
+    chdir: "{{ umeed_src }}"
+    target: install
+  become: yes
+  become_user: "{{ current_user }}"
+  become_flags: -i

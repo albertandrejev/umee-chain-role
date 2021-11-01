@@ -1,0 +1,38 @@
+---
+- name: Cosmos SDK git checkout
+  ansible.builtin.git:
+    repo: "https://github.com/cosmos/cosmos-sdk"
+    dest: "{{ ansible_env.HOME }}/src/cosmos-sdk"
+    version: "v0.44.3"
+
+- name: Build Cosmovisor
+  make:
+    chdir: "{{ ansible_env.HOME }}/src/cosmos-sdk"
+    target: cosmovisor
+  become: yes
+  become_user: "{{ current_user }}"
+  become_flags: -i
+
+- name: Install Cosmovisor
+  ansible.builtin.copy:
+    remote_src: yes
+    src: "{{ ansible_env.HOME }}/src/cosmos-sdk/cosmovisor/cosmovisor"
+    dest: "{{ go_path }}/bin/cosmovisor"
+    mode: "0755"
+
+- name: Create "cosmovisor" directories
+  ansible.builtin.file:
+    path: "{{ umeed_home_dir }}/cosmovisor/genesis/bin"
+    state: directory
+
+- name: Create "cosmovisor" directories
+  ansible.builtin.file:
+    path: "{{ umeed_home_dir }}/cosmovisor/upgrades"
+    state: directory
+
+- name: Copy Umeed binary to Cosmovisor
+  ansible.builtin.copy:
+    remote_src: yes
+    src: "{{ go_path }}/bin/umeed"
+    dest: "{{ umeed_home_dir }}/cosmovisor/genesis/bin/umeed"
+    mode: "0755"

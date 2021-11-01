@@ -1,0 +1,24 @@
+---
+- name: Init umee node
+  command: "umeed init {{ moniker }} --chain-id {{ chain_id }} -o"
+  become: yes
+  become_user: "{{ current_user }}"
+  become_flags: -i
+
+- name: Download and ensure file integrity
+  get_url:
+    url: "{{ umeed_genesis }}"
+    dest: "{{ umeed_home_dir}}/config/genesis.json"
+    checksum: "sha256:{{ umeed_genesis_checksum }}"
+
+- name: Ensure SELinux is set to enforcing mode
+  ansible.builtin.lineinfile:
+    path: "{{ umeed_home_dir}}/config/config.toml"
+    regexp: '^.*seeds ?= ?"'
+    line: 'seeds = "{{ umeed_seeds | join(",") }}"'
+
+- name: Ensure SELinux is set to enforcing mode
+  ansible.builtin.lineinfile:
+    path: "{{ umeed_home_dir}}/config/config.toml"
+    regexp: '^.*persistent_peers ?= ?"'
+    line: 'persistent_peers = "{{ umeed_persistent_peers | join(",") }}"'

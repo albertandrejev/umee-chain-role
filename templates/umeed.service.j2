@@ -1,0 +1,19 @@
+[Unit]
+Description=Umee Daemon
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ current_user }}
+Group={{ current_user }}
+ExecStart={{ go_path }}/bin/cosmovisor start
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+Environment="DAEMON_HOME={{ ansible_env.HOME }}/.umee"
+Environment="DAEMON_NAME=umeed"
+Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
+
+[Install]
+WantedBy=multi-user.target
