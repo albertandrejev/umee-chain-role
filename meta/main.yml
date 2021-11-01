@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: cosmos-game-chain
+  role_name: umee_chain
   author: Albert Andrejev
   description: This role should install Umee blockchain node.
   company: OpenTech Staking
@@ -17,7 +17,7 @@ galaxy_info:
     - tendermint
     - cloud
     - system
-    - cosmos sdk
+    - cosmossdk
     - validator
     - umee
 
