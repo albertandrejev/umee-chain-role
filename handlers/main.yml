@@ -1,0 +1,5 @@
+---
+- name: restart umeed
+  service:
+    name: umeed
+    state: restarted

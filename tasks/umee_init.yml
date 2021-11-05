@@ -11,14 +11,20 @@
     dest: "{{ umeed_home_dir}}/config/genesis.json"
     checksum: "sha256:{{ umeed_genesis_checksum }}"
 
-- name: Ensure SELinux is set to enforcing mode
+- name: Add chain seeds
   ansible.builtin.lineinfile:
     path: "{{ umeed_home_dir}}/config/config.toml"
     regexp: '^.*seeds ?= ?"'
     line: 'seeds = "{{ umeed_seeds | join(",") }}"'
 
-- name: Ensure SELinux is set to enforcing mode
+- name: Add chain persistent peers
   ansible.builtin.lineinfile:
     path: "{{ umeed_home_dir}}/config/config.toml"
     regexp: '^.*persistent_peers ?= ?"'
     line: 'persistent_peers = "{{ umeed_persistent_peers | join(",") }}"'
+
+- name: Activate prometheus metrics
+  ansible.builtin.lineinfile:
+    path: "{{ umeed_home_dir}}/config/config.toml"
+    regexp: '^.*prometheus = false"'
+    line: "prometheus = true"
