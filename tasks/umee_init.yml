@@ -23,8 +23,14 @@
     regexp: '^.*persistent_peers ?= ?"'
     line: 'persistent_peers = "{{ umeed_persistent_peers | join(",") }}"'
 
+- name: Set JSON logs
+  ansible.builtin.lineinfile:
+    path: "{{ umeed_home_dir}}/config/config.toml"
+    regexp: '^.*log_format ?= ?"'
+    line: 'log_format = "json"'
+
 - name: Activate prometheus metrics
   ansible.builtin.lineinfile:
     path: "{{ umeed_home_dir}}/config/config.toml"
-    regexp: '^.*prometheus = false"'
+    regexp: "^.*prometheus = false"
     line: "prometheus = true"
