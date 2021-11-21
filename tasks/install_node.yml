@@ -9,6 +9,6 @@
   make:
     chdir: "{{ umeed_src }}"
     target: install
-  become: yes
-  become_user: "{{ current_user }}"
-  become_flags: -i
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ ansible_local['golang']['general']['home'] }}/bin"
+    GOPATH: "{{ ansible_env.HOME }}/work"

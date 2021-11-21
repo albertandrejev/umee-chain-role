@@ -9,9 +9,9 @@
   make:
     chdir: "{{ ansible_env.HOME }}/src/cosmos-sdk"
     target: cosmovisor
-  become: yes
-  become_user: "{{ current_user }}"
-  become_flags: -i
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ ansible_local['golang']['general']['home'] }}/bin"
+    GOPATH: "{{ ansible_env.HOME }}/work"
 
 - name: Install Cosmovisor
   ansible.builtin.copy:

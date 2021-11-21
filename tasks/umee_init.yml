@@ -1,9 +1,9 @@
 ---
 - name: Init umee node
   command: "umeed init {{ moniker }} --chain-id {{ chain_id }} -o"
-  become: yes
-  become_user: "{{ current_user }}"
-  become_flags: -i
+  environment:
+    GOPATH: "{{ ansible_env.HOME }}/work"
+    PATH: "{{ ansible_env.PATH }}:{{ ansible_local['golang']['general']['home'] }}/bin:{{ ansible_env.HOME }}/work/bin"
 
 - name: Download and ensure file integrity
   get_url:
